@@ -2,6 +2,8 @@
 
 This is a project management dashboard built with Next.js, Ant Design, React Query, Zustand, and Tailwind CSS. It allows users to manage tasks and projects with features such as authentication, project overview, project details, task management, and more.
 
+### Live Link : [`https://project-management-dashboard-tau.vercel.app/`](https://project-management-dashboard-tau.vercel.app/).
+
 ## Features
 - **Authentication**: Login form with validation using Ant Design. Mock backend response for successful and unsuccessful logins.
 - **Projects Overview**: Displays a list of projects with CRUD operations. React Query is used for asynchronous data fetching.
@@ -25,6 +27,7 @@ To run this project locally, follow these steps:
    git clone https://github.com/Tasnimul-Sharan/project-management-dashboard.git
 
 ```bash
+npm i
 npm run dev
 # or
 yarn dev
@@ -33,4 +36,3 @@ pnpm dev
 # or
 bun dev
 ```
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
