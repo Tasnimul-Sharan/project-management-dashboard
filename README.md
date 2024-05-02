@@ -4,6 +4,14 @@ This is a project management dashboard built with Next.js, Ant Design, React Que
 
 ### Live Link : [`https://project-management-dashboard-tau.vercel.app/`](https://project-management-dashboard-tau.vercel.app/).
 
+## Login Credentials
+Use the following login credentials to access the dashboard:
+
+- Email: admin@gmail.com
+- Password: 1234
+
+These credentials simulate a basic authentication system for this demo. If the login is successful, you'll be redirected to the projects overview page.
+
 ## Features
 - **Authentication**: Login form with validation using Ant Design. Mock backend response for successful and unsuccessful logins.
 - **Projects Overview**: Displays a list of projects with CRUD operations. React Query is used for asynchronous data fetching.
@@ -19,13 +27,6 @@ This is a project management dashboard built with Next.js, Ant Design, React Que
 - UI Components: Ant Design for pre-built UI components.
 - Styling: Tailwind CSS for responsive design.
 
-## Login Credentials
-Use the following login credentials to access the dashboard:
-
-- Email: admin@gmail.com
-- Password: 1234
-
-These credentials simulate a basic authentication system for this demo. If the login is successful, you'll be redirected to the projects overview page.
 
 ## Setup Instructions
 To run this project locally, follow these steps:

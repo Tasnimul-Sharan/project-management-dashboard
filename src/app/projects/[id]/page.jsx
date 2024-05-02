@@ -1,197 +1,3 @@
-// "use client";
-
-// import DashboardLayout from '@/app/dashboard/(dashboardLayout)/layout';
-// import { Button, Table, Modal, Form, Input, Spin, Select } from 'antd';
-// import { useRouter, useParams } from 'next/navigation';
-// import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// import { useState } from 'react';
-// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-// import useTaskStore from '@/stores/taskStore'; // Zustand store for task management
-// import { projectsData } from '@/api/mockData';
-
-// const ProjectDetails = () => {
-//   const { tasks, addTask, changeTaskStatus } = useTaskStore(); // Zustand store for task management
-//   const router = useRouter();
-//   const { id } = useParams();
-//   const [isTaskModalVisible, setTaskModalVisible] = useState(false);
-
-//   const fetchProjectDetails = async (id) => {
-//     const project = projectsData.find((project) => project.id == id);
-//     if (!project) {
-//       throw new Error(`Project with ID ${id} not found`);
-//     }
-//     return project;
-//   };
-
-//   const { data: project, isLoading, error, refetch } = useQuery({
-//     queryKey: ['project', id],
-//     queryFn: () => fetchProjectDetails(id),
-//     retry: 3,
-//   });
-
-//   if (isLoading) {
-//     return (
-//       <DashboardLayout>
-//         <div className="flex justify-center items-center h-full">
-//           <Spin tip="Loading project details..." />
-//         </div>
-//       </DashboardLayout>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <DashboardLayout>
-//         <div className="p-8 bg-white">
-//           <p>Error fetching project details. Please try again later.</p>
-//           <Button onClick={refetch}>Retry</Button>
-//         </div>
-//       </DashboardLayout>
-//     );
-//   }
-
-//   const handleAddTask = (values) => {
-//     const newTask = {
-//       id: tasks.length + 1,
-//       name: values.taskName,
-//       status: 'To Do', // Default status
-//       description: values.description,
-//       deadline: values.deadline,
-//       assignee: values.assignee,
-//     };
-//     addTask(newTask); // Add task to Zustand state
-//     setTaskModalVisible(false); // Close the modal
-//   };
-
-//   const taskColumns = [
-//     { title: 'Task Name', dataIndex: 'name', key: 'name' },
-//     { title: 'Description', dataIndex: 'description', key: 'description' },
-//     {
-//       title: 'Status',
-//       dataIndex: 'status',
-//       key: 'status',
-//       render: (_, task) => (
-//         <Select
-//           value={task.status}
-//           onChange={(status) => changeTaskStatus(task.id, status)}
-//         >
-//           <Select.Option value="To Do">To Do</Select.Option>
-//           <Select.Option value="In Progress">In Progress</Select.Option>
-//           <Select.Option value="Done">Done</Select.Option>
-//         </Select>
-//       ),
-//     },
-//     { title: 'Deadline', dataIndex: 'deadline', key: 'deadline' },
-//     { title: 'Assignee', dataIndex: 'assignee', key: 'assignee' },
-//   ];
-
-//   return (
-//     <DashboardLayout className="p-8">
-//       <h1 className="text-2xl">{project.name}</h1>
-//       <p>{project.description}</p>
-
-//       {/* Button to open the modal to add a new task */}
-//       <Button type="primary" onClick={() => setTaskModalVisible(true)}>Add Task</Button>
-
-//       {/* Modal for adding a new task */}
-//       <Modal
-//         title="Add New Task"
-//         visible={isTaskModalVisible}
-//         onCancel={() => setTaskModalVisible(false)}
-//         footer={null}
-//       >
-//         <Form layout="vertical" onFinish={handleAddTask}>
-//           <Form.Item
-//             label="Task Name"
-//             name="taskName"
-//             rules={[{ required: true, message: 'Please enter a task name' }]}
-//           >
-//             <Input placeholder="Task Name" />
-//           </Form.Item>
-//           <Form.Item
-//             label="Description"
-//             name="description"
-//             rules={[{ required: true, message: 'Please enter a description' }]}
-//           >
-//             <Input.TextArea placeholder="Description" />
-//           </Form.Item>
-//           <Form.Item
-//             label="Deadline"
-//             name="deadline"
-//             rules={[{ required: true, message: 'Please select a deadline' }]}
-//           >
-//             <Input type="date" />
-//           </Form.Item>
-//           <Form.Item
-//             label="Assignee"
-//             name="assignee"
-//             rules={[{ required: true, message: 'Please enter an assignee' }]}
-//           >
-//             <Input placeholder="Assignee" />
-//           </Form.Item>
-//           <Form.Item>
-//             <Button type="primary" htmlType="submit">Add Task</Button>
-//           </Form.Item>
-//         </Form>
-//       </Modal>
-
-//       {/* Drag-and-drop context for tasks */}
-//       <DragDropContext
-//         onDragEnd={(result) => {
-//           if (!result.destination) return; // Ignore invalid drops
-//           const { source, destination } = result;
-
-//           if (source.droppableId !== destination.droppableId) {
-//             const sourceId = parseInt(source.droppableId);
-//             const destinationId = parseInt(destination.droppableId);
-
-//             changeTaskStatus(parseInt(result.draggableId, 10), destination.droppableId); // Change status using Zustand
-//           }
-//         }}
-//       >
-
-//         <Droppable droppableId="TaskTable">
-//           {(provided) => (
-//             <div ref={provided.innerRef} {...provided.droppableProps}>
-//               {/* Task table with drag-and-drop */}
-//               <Table
-//                 columns={taskColumns}
-//                 dataSource={tasks} // Task data from Zustand
-//                 rowKey="id"
-//                 pagination={false}
-//                 components={{
-//                   body: {
-//                     row: (props) => {
-//                       const rowKey = props['data-row-key']; // Ensure a valid key
-//                       return (
-//                         <Draggable draggableId={`${rowKey}`} index={rowKey}>
-//                           {(provided) => (
-//                             <tr
-//                               ref={provided.innerRef}
-//                               {...provided.draggableProps}
-//                               {...provided.dragHandleProps}
-//                             >
-//                               {props.children}
-//                             </tr>
-//                           )}
-//                         </Draggable>
-//                       );
-//                     },
-//                   },
-//                 }}
-//               />
-//               {provided.placeholder} {/* Placeholder for proper drag-and-drop */}
-//             </div>
-//           )}
-//         </Droppable>
-//       </DragDropContext>
-//     </DashboardLayout>
-//   );
-// };
-
-// export default ProjectDetails;
-
-
 "use client";
 
 import DashboardLayout from '@/app/dashboard/(dashboardLayout)/layout';
@@ -209,7 +15,7 @@ const ProjectDetails = () => {
     const router = useRouter();
     const { id } = useParams();
     // const { tasks, addTask, changeTaskStatus } = useTaskStore(); 
-    const taskStore = useTaskStore([id]); 
+    const taskStore = useTaskStore(id); 
     const { tasks, addTask, changeTaskStatus } = taskStore();
   const [isTaskModalVisible, setTaskModalVisible] = useState(false);
 
@@ -232,6 +38,7 @@ const ProjectDetails = () => {
     retry: 3,
   });
 
+
   if (isLoading) {
     return (
       <DashboardLayout>
@@ -253,7 +60,7 @@ const ProjectDetails = () => {
     );
   }
 
-  const filteredTasks = tasks?.filter((task) => {
+  const filteredTasks = tasks.filter((task) => {
     const statusMatch = statusFilter ? task.status === statusFilter : true;
     const assigneeMatch = assigneeFilter ? task.assignee === assigneeFilter : true;
     const dueDateMatch = dueDateFilter
@@ -292,9 +99,9 @@ const ProjectDetails = () => {
 
   const handleAddTask = (values) => {
     const newTask = {
-      id: tasks?.length + 1,
+      id: tasks.length + 1,
       name: values.taskName,
-      status: 'To Do', // Default status
+      status: 'To Do',
       description: values.description,
       deadline: values.deadline,
       assignee: values.assignee,
@@ -343,7 +150,7 @@ const ProjectDetails = () => {
           onChange={(date) => setDueDateFilter(date ? date.format('YYYY-MM-DD') : '')}
         />
 
-        {/* Search bar */}
+      
         <Input.Search
           placeholder="Search tasks"
           onSearch={(value) => setSearchQuery(value)}
@@ -376,7 +183,7 @@ const ProjectDetails = () => {
                 components={{
                   body: {
                     row: (props) => {
-                      const rowIndex = parseInt(props['data-row-key'], 10);
+                      const rowIndex = parseInt(props['data-row-key'], taskColumns);
                       return (
                         <Draggable draggableId={`${rowIndex}`} index={rowIndex}>
                           {(provided) => (
